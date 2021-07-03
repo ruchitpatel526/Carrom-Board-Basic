@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Carrom</title>
+	<script type="text/javascript">
+	window.addEventListener('load',canvasApp, false);
+
+	function canvasApp() {
+
+		function  drawScreen () {
+			//to draw carrom board rectangle
+			context.beginPath();
+			context.rect(100, 75, 600, 600);
+			context.fillStyle = '#edb868';
+			context.fill();
+			context.lineWidth = 40;
+			context.strokeStyle = 'black';
+			context.stroke();
+
+
+			//function
+			function colorCircle(x,y,r,w,c){
+				context.beginPath();
+				context.arc(x, y, r, 0, 2 * Math.PI, false);
+				context.lineWidth = w;
+				if(c==1)
+				{
+					context.fillStyle = 'black';
+					context.fill();
+				}
+				else{
+					context.fillStyle = 'red';
+					context.fill();
+				}
+				context.strokeStyle = 'black';
+				context.stroke();
+			}
+
+			function blankCircle(x,y,r,w){
+				context.beginPath();
+				context.arc(x, y, r, 0, 2 * Math.PI, false);
+				context.lineWidth = w;
+				context.strokeStyle = 'black';
+				context.stroke();
+			}
+
+			function partialBlankCircle(x,y,r,w,s,e){
+				context.beginPath();
+				context.arc(x, y, r, s, e, false);
+				context.lineWidth = w;
+				context.strokeStyle = 'black';
+				context.stroke();
+			}
+
+			function drawLine(x1,y1,x2,y2){
+				context.beginPath();
+				context.moveTo(x1, y1);
+				context.lineTo(x2, y2);
+				context.stroke();
+			}
+
+			//to draw goal circles
+			colorCircle(115,90,30,5,1);
+			colorCircle(685,90,30,5,1);
+			colorCircle(115,660,30,5,1);
+			colorCircle(685,660,30,5,1);
+
+			//to make striker line circles
+			colorCircle(230,175,15,1,0);
+			colorCircle(570,175,15,1,0);
+			colorCircle(230,575,15,1,0);
+			colorCircle(570,575,15,1,0);
+			//
+			colorCircle(200,205,15,1,0);
+			colorCircle(600,205,15,1,0);
+			colorCircle(200,545,15,1,0);
+			colorCircle(600,545,15,1,0);
+
+			//to make striker lines
+			drawLine(230,160,570,160);
+			drawLine(230,190,570,190);
+			drawLine(230,560,570,560);
+			drawLine(230,590,570,590);
+			drawLine(215,205,215,545);
+			drawLine(185,205,185,545);
+			drawLine(585,205,585,545);
+			drawLine(615,205,615,545);
+
+			drawLine(175,150,300,275);
+			drawLine(625,150,500,275);
+			drawLine(625,600,500,475);
+			drawLine(175,600,300,475);
+
+			partialBlankCircle(300,275,30,1,-0.5*Math.PI,Math.PI);
+			partialBlankCircle(500,275,30,1,0*Math.PI,1.5*Math.PI);
+			partialBlankCircle(300,475,30,1,-1*Math.PI,0.5*Math.PI);
+			partialBlankCircle(500,475,30,1,0.5*Math.PI,2*Math.PI);
+
+			//to make center circle
+			colorCircle(400,375,10,5,1);
+			blankCircle(400,375,50,1);
+			blankCircle(400,375,55,1);
+
+			updateBall();
+			context.fillStyle = "blue";
+			context.beginPath();
+			context.arc(ball.x,ball.y,25,0,Math.PI*2);
+			context.closePath();
+			context.fill();
+		}
+
+		function updateBall() {
+			if (ball.x + xunits > 660 || ball.x + xunits < 140 ) {
+				xunits = (-1)*xunits;
+			} else if (ball.y + yunits > 645 || ball.y + yunits < 110) {
+				yunits = (-1)*yunits;
+			}
+			xunits = xunits/1.1;
+			yunits = yunits/1.1;
+			ball.x += xunits;
+			ball.y += yunits;
+		}
+
+		var p1 = {x:430,y:575};
+		var xunits = 0;
+		var yunits = 0;
+		var friction = 0.05;
+		var ball = {x:p1.x, y:p1.y};
+		updateBall();   
+
+		var canvas = document.getElementById('myCanvas');
+		canvas.addEventListener("mousedown", getMousePosition, false);
+		canvas.addEventListener("mouseup",getUpPosition,false)
+		var context = canvas.getContext('2d');
+
+		setInterval(drawScreen, 33);
+
+		function getMousePosition(event) {
+			mx = event.x - canvas.offsetLeft;
+			my = event.y - canvas.offsetTop;	
+		}
+
+		function getUpPosition(event) {
+			x_coordinate = event.x - canvas.offsetLeft;
+			y_coordinate = event.y  - canvas.offsetTop;
+
+			xunits = (mx - x_coordinate) * 0.3;
+			yunits = (my - y_coordinate) * 0.3;
+		}
+	}
+
+</script>
+
+</head>
+<body>
+	<div>
+		<canvas id="myCanvas" width="800" height="700"/>
+	</div>
+</body>
+</html>
